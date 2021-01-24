@@ -38,5 +38,8 @@ def AskCredentials():
 
 if __name__ == "__main__":
     createdCheck = CheckDirectories()
-    keyPass, accessPass = AskCredentials()
-    CreateCredentials(keyPass, accessPass)
+    accessPass, keyPass = AskCredentials()
+    if keyPass != "" and accessPass != "":
+        CreateCredentials(keyPass, accessPass)
+    else:
+        print("Credenciales vacías. Programa terminado")

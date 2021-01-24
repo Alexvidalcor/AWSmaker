@@ -1,5 +1,7 @@
-from src.gui import LoginGui, ChooseGui
+from src.gui import LoginGui, MainGui
 from src.ConfigAWS import *
 
-LoginGui()
-ChooseGui()
+userCredentials = LoginGui()
+
+if userCredentials:
+    MainGui()
