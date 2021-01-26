@@ -3,8 +3,13 @@ import PySimpleGUI as sg
 from src.ConfigAWS import *
 from src.s3Create import S3_CreateBucket
 
+def collapse(layout, key, visible):
+    return sg.pin(sg.Column(layout, key=key, visible=visible, pad=(0,0)))
 
 def LoginGui():
+
+    tokenCollapsed = [[sg.Multiline('Introduce token aquí', size=(40, 5), key='-IN2-')]]
+
     layout1 = [[sg.Text('Introduce tus credenciales de AWS'), sg.Text(size=(15,1))],
             [sg.HorizontalSeparator()],
             [sg.Text('Access Key:')],
@@ -12,8 +17,11 @@ def LoginGui():
             [sg.Text('')],  
             [sg.Text('Secret Key:')],      
             [sg.Input(key='-INsecret1-', password_char='*')],
-            [sg.Text('')],      
-            [sg.Button('Aceptar',key="ACEPTAR"), sg.Exit()]]   
+            [sg.Text('')], 
+            [sg.Checkbox('¿Introducir Token?', enable_events=True, key='-OPEN SEC2-CHECKBOX')],
+            [collapse(tokenCollapsed, '-SEC2-', False)],
+            [sg.Text('')],       
+            [sg.Button('Aceptar',key="ACEPTAR")]]   
 
     layout2 = [[sg.Text('Introduce tus credenciales de AWS'), sg.Text(size=(15,1))],
             [sg.HorizontalSeparator()],
@@ -26,7 +34,8 @@ def LoginGui():
             [sg.Button('Aceptar',key="ACEPTAR")],
             [sg.HorizontalSeparator()],
             [sg.Text('Credenciales vacías',visible=True,key='-OUTPUT-', font=('Helvetica', 10), text_color="black")],
-            [sg.Button('Continuar',key="CONT"), sg.Exit()]]
+            [sg.Button('Continuar',key="CONT")]]
+
    
     layout = [[sg.Column(layout1, key='-COL1-'), 
             sg.Column(layout2, visible=False, key='-COL2-')]]
@@ -34,8 +43,13 @@ def LoginGui():
     window = sg.Window('Login Window', layout)      
 
     layout=1
+    opened=False
     while True:
-        event, values = window.read() 
+        event, values = window.read()
+        if event.startswith('-OPEN SEC2-'):
+            opened = not opened
+            window['-OPEN SEC2-CHECKBOX'].update(opened)
+            window['-SEC2-'].update(visible=opened) 
         if event == "ACEPTAR":
             CheckDirectories()
             if values['-INsecret1-'] != "" and values['-INaccess1-'] != "":

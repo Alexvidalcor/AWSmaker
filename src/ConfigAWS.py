@@ -34,7 +34,8 @@ def CreateCredentials(keyID, accessID):
 def AskCredentials():
     keyPass = gp.getpass("Introduce key: ")
     accessPass = gp.getpass("Introduce access: ")
-    return keyPass, accessPass
+    tokenPass = gp.getpass("Introduce tu token")
+    return keyPass, accessPass, tokenPass
 
 if __name__ == "__main__":
     createdCheck = CheckDirectories()
