@@ -8,20 +8,18 @@ def collapse(layout, key, visible):
 
 def LoginGui():
 
-    tokenCollapsed = [[sg.Multiline('Introduce token aquí', size=(40, 5), key='-IN2-')]]
-
     layout1 = [[sg.Text('Introduce tus credenciales de AWS'), sg.Text(size=(15,1))],
             [sg.HorizontalSeparator()],
             [sg.Text('Access Key:')],
             [sg.Input(key='-INaccess1-')],
             [sg.Text('')],  
             [sg.Text('Secret Key:')],      
-            [sg.Input(key='-INsecret1-', password_char='*')],
+            [sg.Input(key='-INkey1-', password_char='*')],
             [sg.Text('')], 
-            [sg.Checkbox('¿Introducir Token?', enable_events=True, key='-OPEN SEC2-CHECKBOX')],
-            [collapse(tokenCollapsed, '-SEC2-', False)],
+            [sg.Checkbox('¿Introducir Token? (opcional)', enable_events=True, key='-OPEN Token1-Checkbox-')],
+            [collapse([[sg.Multiline(size=(40, 5), key='-INtoken1-')]], '-Token1-', False)],
             [sg.Text('')],       
-            [sg.Button('Aceptar',key="ACEPTAR")]]   
+            [sg.Button('Aceptar',key="-ACEPTAR1-"), sg.Button('Validación',key="-VALID1-")]]   
 
     layout2 = [[sg.Text('Introduce tus credenciales de AWS'), sg.Text(size=(15,1))],
             [sg.HorizontalSeparator()],
@@ -29,12 +27,15 @@ def LoginGui():
             [sg.Input(key='-INaccess2-')],
             [sg.Text('')],  
             [sg.Text('Secret Key:')],      
-            [sg.Input(key='-INsecret2-', password_char='*')],
+            [sg.Input(key='-INkey2-', password_char='*')],
+            [sg.Text('')],
+            [sg.Checkbox('¿Introducir Token? (opcional)', enable_events=True, key='-OPEN Token2-Checkbox-')],
+            [collapse([[sg.Multiline(size=(40, 5), key='-INtoken2-')]], '-Token2-', False)],
             [sg.Text('')],      
-            [sg.Button('Aceptar',key="ACEPTAR")],
+            [sg.Button('Aceptar',key="-ACEPTAR2-"), sg.Button('Validación',key="-VALID2-")],
             [sg.HorizontalSeparator()],
-            [sg.Text('Credenciales vacías',visible=True,key='-OUTPUT-', font=('Helvetica', 10), text_color="black")],
-            [sg.Button('Continuar',key="CONT")]]
+            [sg.Text('Credenciales incompletas',visible=True,key='-OUTPUT-', font=('Helvetica', 10), text_color="black")],
+            [sg.Button('Continuar',key="-CONT2-")]]
 
    
     layout = [[sg.Column(layout1, key='-COL1-'), 
@@ -46,22 +47,36 @@ def LoginGui():
     opened=False
     while True:
         event, values = window.read()
-        if event.startswith('-OPEN SEC2-'):
+        if event.startswith(f'-OPEN Token{layout}-'):
             opened = not opened
-            window['-OPEN SEC2-CHECKBOX'].update(opened)
-            window['-SEC2-'].update(visible=opened) 
-        if event == "ACEPTAR":
+            window[f'-OPEN Token{layout}-Checkbox-'].update(opened)
+            window[f'-Token{layout}-'].update(visible=opened) 
+        if event == f"-ACEPTAR{layout}-":
             CheckDirectories()
-            if values['-INsecret1-'] != "" and values['-INaccess1-'] != "":
-                CreateCredentials(values['-INsecret1-'],values['-INaccess1-'])
+            if values[f'-INkey{layout}-'] != "" and values[f'-INaccess{layout}-']:
+                CreateCredentials(values[f'-INaccess{layout}-'],values[f'-INkey{layout}-'], values[f"-INtoken{layout}-"])
                 window.close()
                 return True
             else:
-                print("Credenciales vacías")
+                print("Credenciales incompletas")
                 window[f'-COL{layout}-'].update(visible=False)
                 layout = layout + 1 if layout < 2 else 1
                 window[f'-COL{layout}-'].update(visible=True)
-        if event == "CONT":
+        if event == f"-VALID{layout}-":
+            with open(f'/home/{gp.getuser()}/.aws/credentials', 'r') as file:
+                OriginalCredentials = file.read()
+            CreateCredentials(values[f'-INkey{layout}-'],values[f'-INaccess{layout}-'], values[f"-INtoken{layout}-"])
+            checkCredentials = ValidCredentials()
+            if checkCredentials == "Invalid":
+                sg.Popup("Credenciales inválidas", no_titlebar = True)
+                f = open(f"/home/{gp.getuser()}/.aws/credentials", "w+")
+                f.write(originalCredentials)
+                f.close
+            elif checkCredentials == "Valid":
+                sg.Popup("Credenciales válidas", no_titlebar = True)
+            else:
+                sg.Popup("Pánico en el edén")
+        if event =="-CONT2-":
             window.close()
             return True
 
@@ -106,7 +121,6 @@ def MainGui():
             [sg.Text('Region:',font=("Helvetica", 8)), sg.Combo(['us-east-1', 'us-east-2'], enable_events=True, key='-S3Region-')],
             [sg.Button('Crear Bucket',key="BUCK")]
             ]      
-
 
     layout = [[sg.Column(layout1, key='-COL1-'),
             sg.Column(layout2, visible=False, key='-COL2-')]]
