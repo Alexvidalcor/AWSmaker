@@ -27,8 +27,8 @@ def CreateCredentials(accessID, keyID, tokenID):
         f = open(f"/home/{gp.getuser()}/.aws/credentials", "x+")
         print("Escribiendo credenciales...")
         f.write("[default]\n")
-        f.write(f"aws_access_key_id={keyID}\n")
-        f.write(f"aws_secret_access_key={accessID}\n")
+        f.write(f"aws_access_key_id={accessID}\n")
+        f.write(f"aws_secret_access_key={keyID}\n")
         if tokenID != "":
             f.write(f"aws_session_token={tokenID}\n")
         f.close

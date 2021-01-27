@@ -63,15 +63,18 @@ def LoginGui():
                 layout = layout + 1 if layout < 2 else 1
                 window[f'-COL{layout}-'].update(visible=True)
         if event == f"-VALID{layout}-":
+
+            CheckDirectories()
             with open(f'/home/{gp.getuser()}/.aws/credentials', 'r') as file:
-                OriginalCredentials = file.read()
-            CreateCredentials(values[f'-INkey{layout}-'],values[f'-INaccess{layout}-'], values[f"-INtoken{layout}-"])
+                originalCredentials = file.read()
+
+            CreateCredentials(values[f'-INaccess{layout}-'],values[f'-INkey{layout}-'], values[f"-INtoken{layout}-"])
             checkCredentials = ValidCredentials()
             if checkCredentials == "Invalid":
                 sg.Popup("Credenciales inválidas", no_titlebar = True)
-                f = open(f"/home/{gp.getuser()}/.aws/credentials", "w+")
+                f = open(f"/home/{gp.getuser()}/.aws/credentials", "w")
                 f.write(originalCredentials)
-                f.close
+                f.close()
             elif checkCredentials == "Valid":
                 sg.Popup("Credenciales válidas", no_titlebar = True)
             else:
@@ -86,20 +89,16 @@ def LoginGui():
 
 
 def MainGui():
-
     image_S3 = "input/Circle_S3.png"
     image_EC2 = "input/Circle_EC2.png"
-
     layout1= [[sg.Text('Elige servicio:',size=(17,1), font=("Helvetica", 15))],
 
             [sg.Button(key="S3", button_color=(sg.theme_background_color(),sg.theme_background_color()),
                 image_filename=image_S3, image_size=(80, 80), image_subsample=2, border_width=0),
                     sg.Text('' * 2),
-
             sg.Button(key="EC2", button_color=(sg.theme_background_color(),sg.theme_background_color()),
                 image_filename=image_EC2, image_size=(80, 80), image_subsample=2, border_width=0),
                     sg.Text(' ' * 2)],
-            
             [sg.Text(' ' * 4),sg.Text('S3'), sg.Text(' ' * 14), sg.Text('EC2')]]
 
     layout2 = [[sg.Text('Elige servicio:',size=(17,1), font=("Helvetica", 12))],
@@ -107,15 +106,11 @@ def MainGui():
             [sg.Button(key="S3", button_color=(sg.theme_background_color(),sg.theme_background_color()),
                 image_filename=image_S3, image_size=(80, 80), image_subsample=2, border_width=0),
                     sg.Text('' * 2),
-
             sg.Button(key="EC2", button_color=(sg.theme_background_color(),sg.theme_background_color()),
                 image_filename=image_EC2, image_size=(80, 80), image_subsample=2, border_width=0),
                     sg.Text(' ' * 2)],
-            
             [sg.Text(' ' * 4),sg.Text('S3'), sg.Text(' ' * 14), sg.Text('EC2')],
-            
             [sg.HorizontalSeparator()],
-
             [sg.Text('Configurador S3:',size=(15,1), font=("Helvetica", 10))],
             [sg.Text('Nombre:',font=("Helvetica", 8)), sg.Input(key='-S3Access-')],
             [sg.Text('Region:',font=("Helvetica", 8)), sg.Combo(['us-east-1', 'us-east-2'], enable_events=True, key='-S3Region-')],
