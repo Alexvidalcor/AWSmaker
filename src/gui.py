@@ -62,11 +62,14 @@ def LoginGui():
                 window[f'-COL{layout}-'].update(visible=False)
                 layout = layout + 1 if layout < 2 else 1
                 window[f'-COL{layout}-'].update(visible=True)
-        if event == f"-VALID{layout}-":
 
+        if event == f"-VALID{layout}-":
             CheckDirectories()
-            with open(f'/home/{gp.getuser()}/.aws/credentials', 'r') as file:
-                originalCredentials = file.read()
+            try:
+                with open(f'/home/{gp.getuser()}/.aws/credentials', 'r') as file:
+                    originalCredentials = file.read()
+            except FileNotFoundError:
+                sg.Popup("Credenciales vacías", no_titlebar = True)
 
             CreateCredentials(values[f'-INaccess{layout}-'],values[f'-INkey{layout}-'], values[f"-INtoken{layout}-"])
             checkCredentials = ValidCredentials()
@@ -86,7 +89,6 @@ def LoginGui():
         if event == sg.WIN_CLOSED or event == 'Exit':
             window.close()
             return False    
-
 
 def MainGui():
     image_S3 = "input/Circle_S3.png"
