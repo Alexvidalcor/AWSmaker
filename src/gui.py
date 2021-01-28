@@ -1,7 +1,7 @@
 # Importación de librerías
 import PySimpleGUI as sg
 from src.ConfigAWS import *
-from src.s3Create import S3_CreateBucket
+from src.s3Create import S3_CreateBucket, S3_ListBuckets, S3_Upload
 
 def collapse(layout, key, visible):
     return sg.pin(sg.Column(layout, key=key, visible=visible, pad=(0,0)))
@@ -90,6 +90,7 @@ def LoginGui():
             window.close()
             return False    
 
+
 def MainGui():
     image_S3 = "input/Circle_S3.png"
     image_EC2 = "input/Circle_EC2.png"
@@ -116,7 +117,12 @@ def MainGui():
             [sg.Text('Configurador S3:',size=(15,1), font=("Helvetica", 10))],
             [sg.Text('Nombre:',font=("Helvetica", 8)), sg.Input(key='-S3Access-')],
             [sg.Text('Region:',font=("Helvetica", 8)), sg.Combo(['us-east-1', 'us-east-2'], enable_events=True, key='-S3Region-')],
-            [sg.Button('Crear Bucket',key="BUCK")]
+            [sg.Button('Crear Bucket',key="BUCK")],
+            [sg.Text('')],
+            [sg.HorizontalSeparator()],
+            [sg.Text('Seleccionar Bucket:',size=(18,1), font=("Helvetica", 10)), sg.Text("Elige objeto:")],
+            [sg.Listbox(values=S3_ListBuckets(), size=(17, 12), key='-LIST-', enable_events=True),  sg.Input(key="-FILE-" ,change_submits=True), sg.FileBrowse("Objeto", key="-FILEBROWSER-", disabled=True)],
+            [sg.Button('Refrescar lista',key="-UPDATE_LIST-"), sg.Text(' ' * 20), sg.Button('Subir objeto al bucket seleccionado',key="-UPLOAD-")]
             ]      
 
     layout = [[sg.Column(layout1, key='-COL1-'),
@@ -131,12 +137,21 @@ def MainGui():
             window[f'-COL{layout}-'].update(visible=False)
             layout = layout + 1 if layout < 2 else 1
             window[f'-COL{layout}-'].update(visible=True)
-        if event == "BUCK":
+        elif event == "BUCK":
             bucketCreate = S3_CreateBucket(values['-S3Access-'],region=values['-S3Region-'])
             if bucketCreate:
                 sg.Popup("¡Bucket creado con éxito")
-            
-        if event == sg.WIN_CLOSED or event == 'Exit':
+        elif event == "-LIST-":
+            window.Element('-FILEBROWSER-').Update(disabled=False)
+        elif event == "-UPDATE_LIST-":
+            print("OK")
+            window.Element('-LIST-').Update(values=S3_ListBuckets())
+            print(S3_ListBuckets)
+        elif event =="-UPLOAD-":
+            print(values["-FILEBROWSER-"])
+            S3_Upload(values["-FILEBROWSER-"], values["-LIST-"], object_name=None)
+            sg.Popup("¡Objeto subido con éxito")
+        elif event == sg.WIN_CLOSED or event == 'Exit':
             break      
 
     window.close()

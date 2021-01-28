@@ -2,3 +2,7 @@
 .gitignore
 .vscode/settings.json
 src/__pycache__/
+.ipynb_checkpoints/
+test.ipynb
+test.py 
+
