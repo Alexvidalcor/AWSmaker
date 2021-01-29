@@ -121,7 +121,7 @@ def MainGui():
             [sg.Text('')],
             [sg.HorizontalSeparator()],
             [sg.Text('Seleccionar Bucket:',size=(18,1), font=("Helvetica", 10)), sg.Text("Elige objeto:")],
-            [sg.Listbox(values=S3_ListBuckets(), size=(17, 12), key='-LIST-', enable_events=True),  sg.Input(key="-FILE-" ,change_submits=True), sg.FileBrowse("Objeto", key="-FILEBROWSER-", disabled=True)],
+            [sg.Listbox(values=[element[1] for element in S3_ListBuckets()], size=(17, 12), key='-LIST-', enable_events=True),  sg.Input(key="-FILE-" ,change_submits=True), sg.FileBrowse("Objeto", key="-FILEBROWSER-", disabled=True)],
             [sg.Button('Refrescar lista',key="-UPDATE_LIST-"), sg.Text(' ' * 20), sg.Button('Subir objeto al bucket seleccionado',key="-UPLOAD-")]
             ]      
 
@@ -150,7 +150,7 @@ def MainGui():
         elif event =="-UPLOAD-":
             print(values["-FILEBROWSER-"])
             S3_Upload(values["-FILEBROWSER-"], values["-LIST-"], object_name=None)
-            sg.Popup("¡Objeto subido con éxito")
+            sg.Popup("¡Objeto subido con éxito!")
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break      
 
