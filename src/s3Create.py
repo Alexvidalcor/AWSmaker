@@ -22,8 +22,6 @@ def S3_Upload(file_name, bucket, object_name=None):
         object_name = file_name
     s3_client = boto3.client('s3')
     response = s3_client.upload_file(file_name, bucket, object_name)
-
-
     data = open('test.jpg', 'rb')
     s3.Bucket('my-bucket').put_object(Key='test.jpg', Body=data)
     return True
