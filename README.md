@@ -3,7 +3,11 @@
 
 _Programa que permite gestionar y configurar distintos Servicios de AWS._
 
-![Login_Window](https://github.com/Alexvidalcor/AWSmaker/blob/master/input/AWSMaker_1.gif?raw=true), ![S3_Window](https://github.com/Alexvidalcor/AWSmaker/blob/master/input/AWSMaker_2.png?raw=true)
+ 
+Ventana de login           |  Ventana de S3
+:-------------------------:|:-------------------------:
+![Login_Window](https://github.com/Alexvidalcor/AWSmaker/blob/master/input/AWSMaker_1.gif?raw=true)  |  ![S3_Window](https://github.com/Alexvidalcor/AWSmaker/blob/master/input/AWSMaker_2.png?raw=true)
+
 
 ## Comenzando 🚀
 
