@@ -2,6 +2,22 @@
 import PySimpleGUI as sg
 from src.ConfigAWS import *
 from src.s3Create import S3_CreateBucket, S3_ListBuckets, S3_Upload
+import os
+import sys
+
+def LoginFix():
+    layout = [[sg.T('Credenciales inválidas')],
+            [sg.Text('')],
+            [sg.ReadFormButton('Reintentar')]]
+
+    window = sg.Window('Validación', layout) 
+
+    while True:
+        button, values = window.read()
+        if button is None or button == 'Exit':
+                break
+        elif button == 'Reintentar':
+                os.execv(sys.executable, ['python'] + sys.argv)
 
 def collapse(layout, key, visible):
     return sg.pin(sg.Column(layout, key=key, visible=visible, pad=(0,0)))
@@ -74,7 +90,7 @@ def LoginGui():
             CreateCredentials(values[f'-INaccess{layout}-'],values[f'-INkey{layout}-'], values[f"-INtoken{layout}-"])
             checkCredentials = ValidCredentials()
             if checkCredentials == "Invalid":
-                sg.Popup("Credenciales inválidas", no_titlebar = True)
+                LoginFix()
                 f = open(f"/home/{gp.getuser()}/.aws/credentials", "w")
                 f.write(originalCredentials)
                 f.close()
@@ -89,7 +105,6 @@ def LoginGui():
         if event == sg.WIN_CLOSED or event == 'Exit':
             window.close()
             return False    
-
 
 def MainGui():
     image_S3 = "input/Circle_S3.png"
@@ -121,7 +136,7 @@ def MainGui():
             [sg.Text('')],
             [sg.HorizontalSeparator()],
             [sg.Text('Seleccionar Bucket:',size=(18,1), font=("Helvetica", 10)), sg.Text("Elige objeto:")],
-            [sg.Listbox(values=[element[1] for element in S3_ListBuckets()], size=(17, 12), key='-LIST-', enable_events=True),  sg.Input(key="-FILE-" ,change_submits=True), sg.FileBrowse("Objeto", key="-FILEBROWSER-", disabled=True)],
+            [sg.Listbox(values=[element for element in S3_ListBuckets()], size=(17, 6), key='-LIST-', enable_events=True),  sg.Input(key="-FILE-" ,change_submits=True), sg.FileBrowse("Objeto", key="-FILEBROWSER-", disabled=True)],
             [sg.Button('Refrescar lista',key="-UPDATE_LIST-"), sg.Text(' ' * 20), sg.Button('Subir objeto al bucket seleccionado',key="-UPLOAD-")]
             ]      
 
@@ -148,8 +163,8 @@ def MainGui():
             window.Element('-LIST-').Update(values=S3_ListBuckets())
             print(S3_ListBuckets)
         elif event =="-UPLOAD-":
-            print(values["-FILEBROWSER-"])
-            S3_Upload(values["-FILEBROWSER-"], values["-LIST-"], object_name=None)
+            filename = sg.popup_get_text('Nombre para subida')
+            S3_Upload(values["-FILEBROWSER-"], values["-LIST-"],object_name=filename)
             sg.Popup("¡Objeto subido con éxito!")
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break      

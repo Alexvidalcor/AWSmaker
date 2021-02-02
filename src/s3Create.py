@@ -17,12 +17,11 @@ def S3_CreateBucket(bucket_name, region=""):
     return True
 
 
-def S3_Upload(file_name, bucket, object_name=None):
-    if object_name is None:
-        object_name = file_name
-    s3_client = boto3.client('s3')
-    response = s3_client.upload_file(file_name, bucket, object_name)
-    data = open('test.jpg', 'rb')
-    s3.Bucket('my-bucket').put_object(Key='test.jpg', Body=data)
+def S3_Upload(file_name, bucket, object_name=""):
+    
+    if object_name is "":
+        object_name = file_name.split("/")[-1]
+    s3 = boto3.resource('s3')
+    s3.meta.client.upload_file(file_name, bucket[0][1], object_name)
     return True
 
