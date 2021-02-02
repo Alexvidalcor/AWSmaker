@@ -10,7 +10,7 @@ def LoginFix():
             [sg.Text('')],
             [sg.ReadFormButton('Reintentar')]]
 
-    window = sg.Window('Validación', layout) 
+    window = sg.Window('Validación', layout, no_titlebar = True) 
 
     while True:
         button, values = window.read()
@@ -167,6 +167,8 @@ def MainGui():
             S3_Upload(values["-FILEBROWSER-"], values["-LIST-"],object_name=filename)
             sg.Popup("¡Objeto subido con éxito!")
         elif event == sg.WIN_CLOSED or event == 'Exit':
-            break      
+            break 
+        elif event == "EC2":
+            sg.Popup("En desarrollo", no_titlebar = False) 
 
     window.close()

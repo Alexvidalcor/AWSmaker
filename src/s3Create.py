@@ -19,7 +19,7 @@ def S3_CreateBucket(bucket_name, region=""):
 
 def S3_Upload(file_name, bucket, object_name=""):
     
-    if object_name is "":
+    if object_name == "":
         object_name = file_name.split("/")[-1]
     s3 = boto3.resource('s3')
     s3.meta.client.upload_file(file_name, bucket[0][1], object_name)
