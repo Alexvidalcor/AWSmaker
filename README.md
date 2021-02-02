@@ -15,6 +15,14 @@ _Para SO basados en Debian y Fedora._
 
 Ver **Despliegue** para conocer como desplegar el proyecto.
 
+## Comenzando 🚀
+
+Servicios          |  Estado
+:-------------------------:|:-------------------------:
+Gestión credenciales  |  OK
+AWS S3  |  OK
+AWS EC2  |  En desarrollo
+
 
 ### Pre-requisitos 📋
 
