@@ -3,10 +3,18 @@
 
 _Programa que permite gestionar y configurar distintos Servicios de AWS._
 
- 
 Ventana de login           |  Ventana de S3
 :-------------------------:|:-------------------------:
 ![Login_Window](https://github.com/Alexvidalcor/AWSmaker/blob/master/input/AWSMaker_1.gif?raw=true)  |  ![S3_Window](https://github.com/Alexvidalcor/AWSmaker/blob/master/input/AWSMaker_2.png?raw=true)
+
+
+## Estado del proyecto ⚙️
+
+Servicios          |  Estado
+:-------------------------:|:-------------------------:
+Gestión credenciales  |  OK
+AWS S3  |  OK
+AWS EC2  |  En desarrollo
 
 
 ## Comenzando 🚀
@@ -14,14 +22,6 @@ Ventana de login           |  Ventana de S3
 _Para SO basados en Debian y Fedora._
 
 Ver **Despliegue** para conocer como desplegar el proyecto.
-
-## Comenzando 🚀
-
-Servicios          |  Estado
-:-------------------------:|:-------------------------:
-Gestión credenciales  |  OK
-AWS S3  |  OK
-AWS EC2  |  En desarrollo
 
 
 ### Pre-requisitos 📋
