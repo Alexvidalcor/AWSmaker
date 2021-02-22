@@ -165,8 +165,7 @@ def MainGui():
     layout=1
     while True:
         event, values = window.read() 
-        if event == "S3-0" or event == "S3-1" or event == "S3-2":
-            print("OK")
+        if event == "S3-1" or event == "S3-2" or event == "S3-3":
             window[f'-COL{layout}-'].update(visible=False)
             layout = 2
             window[f'-COL{layout}-'].update(visible=True)
@@ -186,7 +185,7 @@ def MainGui():
             sg.Popup("¡Objeto subido con éxito!")
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break 
-        elif event == "EC2-0" or event == "EC2-1" or event == "EC2-2":
+        elif event == "EC2-1" or event == "EC2-2" or event == "EC2-3":
             print("OK")
             window[f'-COL{layout}-'].update(visible=False)
             layout = 3
