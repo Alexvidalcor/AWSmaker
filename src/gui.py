@@ -106,25 +106,27 @@ def LoginGui():
             window.close()
             return False    
 
+
 def MainGui():
     image_S3 = "input/Circle_S3.png"
     image_EC2 = "input/Circle_EC2.png"
+    
     layout1= [[sg.Text('Elige servicio:',size=(17,1), font=("Helvetica", 15))],
 
-            [sg.Button(key="S3", button_color=(sg.theme_background_color(),sg.theme_background_color()),
+            [sg.Button(key="S3-1", button_color=(sg.theme_background_color(),sg.theme_background_color()),
                 image_filename=image_S3, image_size=(80, 80), image_subsample=2, border_width=0),
                     sg.Text('' * 2),
-            sg.Button(key="EC2", button_color=(sg.theme_background_color(),sg.theme_background_color()),
+            sg.Button(key="EC2-1", button_color=(sg.theme_background_color(),sg.theme_background_color()),
                 image_filename=image_EC2, image_size=(80, 80), image_subsample=2, border_width=0),
                     sg.Text(' ' * 2)],
             [sg.Text(' ' * 4),sg.Text('S3'), sg.Text(' ' * 14), sg.Text('EC2')]]
 
     layout2 = [[sg.Text('Elige servicio:',size=(17,1), font=("Helvetica", 12))],
 
-            [sg.Button(key="S3", button_color=(sg.theme_background_color(),sg.theme_background_color()),
+            [sg.Button(key="S3-2", button_color=(sg.theme_background_color(),sg.theme_background_color()),
                 image_filename=image_S3, image_size=(80, 80), image_subsample=2, border_width=0),
                     sg.Text('' * 2),
-            sg.Button(key="EC2", button_color=(sg.theme_background_color(),sg.theme_background_color()),
+            sg.Button(key="EC2-2", button_color=(sg.theme_background_color(),sg.theme_background_color()),
                 image_filename=image_EC2, image_size=(80, 80), image_subsample=2, border_width=0),
                     sg.Text(' ' * 2)],
             [sg.Text(' ' * 4),sg.Text('S3'), sg.Text(' ' * 14), sg.Text('EC2')],
@@ -138,19 +140,35 @@ def MainGui():
             [sg.Text('Seleccionar Bucket:',size=(18,1), font=("Helvetica", 10)), sg.Text("Elige objeto:")],
             [sg.Listbox(values=[element for element in S3_ListBuckets()], size=(17, 6), key='-LIST-', enable_events=True),  sg.Input(key="-FILE-" ,change_submits=True), sg.FileBrowse("Objeto", key="-FILEBROWSER-", disabled=True)],
             [sg.Button('Refrescar lista',key="-UPDATE_LIST-"), sg.Text(' ' * 20), sg.Button('Subir objeto al bucket seleccionado',key="-UPLOAD-")]
-            ]      
+            ]
+
+    layout3 = [[sg.Text('Elige servicio:',size=(17,1), font=("Helvetica", 12))],
+
+            [sg.Button(key="S3-3", button_color=(sg.theme_background_color(),sg.theme_background_color()),
+                image_filename=image_S3, image_size=(80, 80), image_subsample=2, border_width=0),
+                    sg.Text('' * 2),
+            sg.Button(key="EC2-3", button_color=(sg.theme_background_color(),sg.theme_background_color()),
+                image_filename=image_EC2, image_size=(80, 80), image_subsample=2, border_width=0),
+                    sg.Text(' ' * 2)],
+            [sg.Text(' ' * 4),sg.Text('S3'), sg.Text(' ' * 14), sg.Text('EC2')],
+            [sg.HorizontalSeparator()],
+            [sg.Text('Configurador EC2:',size=(15,1), font=("Helvetica", 10))]
+            ]
+            
 
     layout = [[sg.Column(layout1, key='-COL1-'),
-            sg.Column(layout2, visible=False, key='-COL2-')]]
+            sg.Column(layout2, visible=False, key='-COL2-'),
+            sg.Column(layout3, visible=False, key='-COL3-')]]
 
     window = sg.Window('AWS choice', layout)      
 
     layout=1
     while True:
         event, values = window.read() 
-        if event == "S3":
+        if event == "S3-0" or event == "S3-1" or event == "S3-2":
+            print("OK")
             window[f'-COL{layout}-'].update(visible=False)
-            layout = layout + 1 if layout < 2 else 1
+            layout = 2
             window[f'-COL{layout}-'].update(visible=True)
         elif event == "BUCK":
             bucketCreate = S3_CreateBucket(values['-S3Access-'],region=values['-S3Region-'])
@@ -168,7 +186,11 @@ def MainGui():
             sg.Popup("¡Objeto subido con éxito!")
         elif event == sg.WIN_CLOSED or event == 'Exit':
             break 
-        elif event == "EC2":
-            sg.Popup("En desarrollo", no_titlebar = False) 
+        elif event == "EC2-0" or event == "EC2-1" or event == "EC2-2":
+            print("OK")
+            window[f'-COL{layout}-'].update(visible=False)
+            layout = 3
+            window[f'-COL{layout}-'].update(visible=True)
+            
 
     window.close()
